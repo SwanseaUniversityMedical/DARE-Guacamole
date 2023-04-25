@@ -1,0 +1,54 @@
+{{- if .Values.guacd.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacd
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      run: guacd
+
+  template:
+    metadata:
+      labels:
+        run: guacd
+
+    spec:
+      restartPolicy: Always
+
+      {{- if .Values.guacd.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.guacd.image.pullSecret }}
+      {{- end }}
+
+      containers:
+        - name: guacd
+          {{- include "image" (dict "image" .Values.guacd.image) | indent 10 }}
+
+          ports:
+            - name: guacd
+              containerPort: {{ .Values.guacd.port }}
+
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.guacd.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.guacd.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+{{- end }}

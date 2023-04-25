@@ -1,0 +1,60 @@
+{{- if .Values.guacamole.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacamole
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      run: guacamole
+
+  template:
+    metadata:
+      labels:
+        run: guacamole
+
+    spec:
+      restartPolicy: Always
+
+      {{- if .Values.guacamole.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.guacamole.image.pullSecret }}
+      {{- end }}
+
+      containers:
+        - name: guacamole
+          {{- include "image" (dict "image" .Values.guacamole.image) | indent 10 }}
+
+          env:
+          - name: GUACD_HOSTNAME
+            value: {{- include "guacd.hostname" . }}
+          - name: GUACD_PORT
+            value: {{ .Values.guacd.port }}
+
+          ports:
+            - name: guacamole
+              containerPort: {{ .Values.guacamole.port }}
+
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.guacamole.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.guacamole.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "750m"
+{{- end }}
