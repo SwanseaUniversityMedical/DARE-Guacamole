@@ -133,6 +133,7 @@ jobs:
                 "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
               }],
               ['@semantic-release/github', {
+                "proxy": "http://192.168.10.15:8080",
                 "successComment": false,
                 "failTitle": false
               }]
