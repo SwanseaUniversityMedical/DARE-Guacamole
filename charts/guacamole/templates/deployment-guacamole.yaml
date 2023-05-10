@@ -29,10 +29,10 @@ spec:
           {{- include "image" (dict "image" .Values.guacamole.image) | indent 10 }}
 
           env:
-          - name: GUACD_HOSTNAME
-            value: {{- include "guacd.hostname" . }}
-          - name: GUACD_PORT
-            value: {{ .Values.guacd.port }}
+            - name: GUACD_HOSTNAME
+              value: guacd.guacamole.svc.cluster.local
+            - name: GUACD_PORT
+              value: "{{ .Values.guacd.port }}"
 
           ports:
             - name: guacamole
