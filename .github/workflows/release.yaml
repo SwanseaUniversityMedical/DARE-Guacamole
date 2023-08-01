@@ -167,7 +167,7 @@ jobs:
           TAG: ${{ steps.semantic.outputs.release-version }}
 
       - name: delete orphaned release on container push failure
-        uses: dev-drprasad/delete-tag-and-release@v0.2.1
+        uses: dev-drprasad/delete-tag-and-release@v1.0.1
         if: (failure() && steps.container-push.outcome == 'failure') && steps.semantic.outputs.new-release-published == 'true'
         with:
           tag_name: ${ env.TAG_PREFIX }-${{ steps.semantic.outputs.release-version }}
@@ -342,7 +342,7 @@ jobs:
           TAG: ${{ steps.semantic.outputs.release-version }}
 
       - name: delete orphaned release on chart push failure
-        uses: dev-drprasad/delete-tag-and-release@v0.2.1
+        uses: dev-drprasad/delete-tag-and-release@v1.0.1
         if: (failure() && steps.chart-push.outcome == 'failure') && steps.semantic.outputs.new-release-published == 'true'
         with:
           tag_name: ${ env.TAG_PREFIX }-${{ steps.semantic.outputs.release-version }}
