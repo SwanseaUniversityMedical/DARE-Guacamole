@@ -1,0 +1,107 @@
+{{- if .Values.web.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "guacamole.fullname" . }}-web
+
+  {{- if .Values.web.annotations }}
+  annotations:
+    {{- toYaml .Values.web.annotations | nindent 4 }}
+  {{- end }}
+
+  labels:
+    app: {{ include "guacamole.labels.app" . }}
+    component: web
+    chart: {{ include "guacamole.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.web.labels }}
+    {{- toYaml .Values.web.labels | nindent 4 }}
+    {{- end }}
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: {{ include "guacamole.labels.app" . }}
+      component: web
+      release: {{ .Release.Name }}
+
+  template:
+    metadata:
+
+      annotations:
+        {{- if .Values.guacamole.podAnnotations }}
+        {{- toYaml .Values.guacamole.podAnnotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.web.podAnnotations }}
+        {{- toYaml .Values.web.podAnnotations | nindent 8 }}
+        {{- end }}
+
+      labels:
+        app: {{ include "guacamole.labels.app" . }}
+        component: web
+        release: {{ .Release.Name }}
+        {{- if .Values.web.podLabels }}
+        {{- toYaml .Values.web.podLabels | nindent 8 }}
+        {{- end }}
+
+    spec:
+      restartPolicy: Always
+
+      {{- if .Values.web.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.web.image.pullSecret }}
+      {{- end }}
+
+      securityContext:
+        fsGroup: 0
+
+      containers:
+        - name: web
+          {{- include "image" (dict "image" .Values.web.image) | indent 10 }}
+
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 0
+
+          env:
+            - name: WEBAPP_CONTEXT
+              value: ROOT
+            - name: GUACD_HOSTNAME
+              value: {{ include "guacamole.fullname" . }}-guacd.svc.cluster.local
+            - name: GUACD_PORT
+              value: "{{ .Values.guacd.port }}"
+            - name: POSTGRES_HOSTNAME
+              value: {{ include "guacamole.fullname" . }}-db.svc.cluster.local
+            - name: POSTGRES_PORT
+              value: "{{ .Values.database.primary.service.ports.postgresql }}"
+            - name: POSTGRES_DATABASE
+              value: "{{ .Values.database.auth.database }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.database.auth.username }}"
+
+            {{- if .Values.database.auth.password }}
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.database.auth.password }}"
+            {{- end }}
+
+          ports:
+            - name: web
+              containerPort: {{ .Values.web.port }}
+
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.web.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.web.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          resources: {{ .Values.web.resources }}
+{{- end }}

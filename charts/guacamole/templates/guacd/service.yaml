@@ -1,0 +1,32 @@
+{{- if .Values.guacd.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "guacamole.fullname" . }}-guacd
+
+  {{- if .Values.guacd.annotations }}
+  annotations:
+    {{- toYaml .Values.guacd.annotations | nindent 4 }}
+  {{- end }}
+
+  labels:
+    app: {{ include "guacamole.labels.app" . }}
+    component: guacd
+    chart: {{ include "guacamole.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.guacd.labels }}
+    {{- toYaml .Values.guacd.labels | nindent 4 }}
+    {{- end }}
+
+spec:
+  selector:
+    app: {{ include "guacamole.labels.app" . }}
+    component: guacd
+    release: {{ .Release.Name }}
+
+  ports:
+  - name: guacd
+    port: {{ .Values.guacd.port }}
+    protocol: TCP
+{{- end }}

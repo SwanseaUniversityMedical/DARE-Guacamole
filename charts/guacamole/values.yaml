@@ -7,12 +7,18 @@ guacd:
     tag: 1.5.1
     pullPolicy: IfNotPresent
     pullSecret: ""
-    uid: 1001
-    gid: 1001
+
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "256Mi"
+      cpu: "750m"
 
   port: 4822
 
-guacamole:
+web:
   enabled: true
 
   image:
@@ -20,8 +26,31 @@ guacamole:
     tag: 1.0.1
     pullPolicy: IfNotPresent
     pullSecret: ""
-    uid: 1001
-    gid: 1001
 
-  guacdHostname: guacd.guacamole.svc.cluster.local
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "256Mi"
+      cpu: "750m"
+
   port: 8080
+
+database:
+  enabled: true
+
+  # https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+
+  auth:
+    username: guacamole
+    password:
+    database: guacdb
+
+  primary:
+    service:
+      ports:
+        postgresql: 5432
+
+    persistence:
+      enabled: false
