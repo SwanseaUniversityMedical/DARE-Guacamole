@@ -107,13 +107,13 @@ spec:
             - name: WEBAPP_CONTEXT
               value: ROOT
             - name: GUACD_HOSTNAME
-              value: {{ include "guacamole.fullname" . }}-guacd.svc.cluster.local
+              value: {{ include "guacamole.fullname" . }}-guacd.{{ .Release.Namespace }}.svc.cluster.local
             - name: GUACD_PORT
               value: "{{ .Values.guacd.port }}"
 
             {{- if .Values.database.enabled }}
             - name: POSTGRES_HOSTNAME
-              value: {{ include "guacamole.fullname" . }}-database.svc.cluster.local
+              value: {{ include "guacamole.fullname" . }}-database.{{ .Release.Namespace }}.svc.cluster.local
             - name: POSTGRES_PORT
               value: "{{ .Values.database.primary.service.ports.postgresql }}"
             - name: POSTGRES_DATABASE
