@@ -4,9 +4,9 @@ kind: Service
 metadata:
   name: {{ include "guacamole.fullname" . }}-web
 
-  {{- if .Values.web.annotations }}
+  {{- if .Values.web.service.annotations }}
   annotations:
-    {{- toYaml .Values.web.annotations | nindent 4 }}
+    {{- toYaml .Values.web.service.annotations | nindent 4 }}
   {{- end }}
 
   labels:
@@ -15,9 +15,6 @@ metadata:
     chart: {{ include "guacamole.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    {{- if .Values.web.labels }}
-    {{- toYaml .Values.web.labels | nindent 4 }}
-    {{- end }}
 
 spec:
   selector:

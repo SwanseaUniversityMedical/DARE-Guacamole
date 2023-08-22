@@ -1,4 +1,13 @@
 {{- if .Values.web.enabled }}
+{{- $podNodeSelector := include "guacamole.podNodeSelector" (dict "Release" .Release "Values" .Values "nodeSelector" .Values.web.nodeSelector) }}
+{{- $podAffinity := include "guacamole.podAffinity" (dict "Release" .Release "Values" .Values "affinity" .Values.web.affinity) }}
+{{- $podTolerations := include "guacamole.podTolerations" (dict "Release" .Release "Values" .Values "tolerations" .Values.web.tolerations) }}
+{{- $podSecurityContext := include "guacamole.podSecurityContext" (dict "Release" .Release "Values" .Values "securityContext" .Values.web.securityContext) }}
+{{- $volumeMounts := include "guacamole.volumeMounts" (dict "Release" .Release "Values" .Values "extraVolumeMounts" .Values.web.extraVolumeMounts) }}
+{{- $volumes := include "guacamole.volumes" (dict "Release" .Release "Values" .Values "extraVolumes" .Values.web.extraVolumes) }}
+{{- $env := include "guacamole.env" (dict "Release" .Release "Values" .Values "extraEnv" .Values.web.extraEnv) }}
+{{- $envFrom := include "guacamole.envFrom" (dict "Release" .Release "Values" .Values "extraEnvFrom" .Values.web.extraEnvFrom) }}
+{{- $containers:= include "guacamole.containers" (dict "Release" .Release "Values" .Values "extraContainers" .Values.web.extraContainers) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +29,7 @@ metadata:
     {{- end }}
 
 spec:
-  replicas: 1
+  replicas: {{ .Values.web.replicas }}
 
   selector:
     matchLabels:
@@ -55,16 +64,44 @@ spec:
         - name: {{ .Values.web.image.pullSecret }}
       {{- end }}
 
+      {{- if $podNodeSelector }}
+      nodeSelector:
+        {{- $podNodeSelector | nindent 8 }}
+      {{- end }}
+
+      {{- if $podAffinity }}
+      affinity:
+        {{- $podAffinity | nindent 8 }}
+      {{- end }}
+
+      {{- if $podTolerations }}
+      tolerations:
+        {{- $podTolerations | nindent 8 }}
+      {{- end }}
+
+      {{- if $podSecurityContext }}
       securityContext:
-        fsGroup: 0
+        {{- $podSecurityContext | nindent 8 }}
+      {{- end }}
+
+      {{- if $volumes }}
+      volumes:
+        {{- $volumes | indent 8 }}
+      {{- end }}
 
       containers:
         - name: web
           {{- include "image" (dict "image" .Values.web.image) | indent 10 }}
 
-          securityContext:
-            runAsUser: 1001
-            runAsGroup: 0
+          {{- if $volumeMounts }}
+          volumeMounts:
+            {{- $volumeMounts | indent 12 }}
+          {{- end }}
+
+          envFrom:
+            {{- if $envFrom }}
+            {{- $envFrom | indent 12 }}
+            {{- end }}
 
           env:
             - name: WEBAPP_CONTEXT
@@ -73,6 +110,8 @@ spec:
               value: {{ include "guacamole.fullname" . }}-guacd.svc.cluster.local
             - name: GUACD_PORT
               value: "{{ .Values.guacd.port }}"
+
+            {{- if .Values.database.enabled }}
             - name: POSTGRES_HOSTNAME
               value: {{ include "guacamole.fullname" . }}-db.svc.cluster.local
             - name: POSTGRES_PORT
@@ -81,10 +120,14 @@ spec:
               value: "{{ .Values.database.auth.database }}"
             - name: POSTGRES_USER
               value: "{{ .Values.database.auth.username }}"
-
             {{- if .Values.database.auth.password }}
             - name: POSTGRES_PASSWORD
               value: "{{ .Values.database.auth.password }}"
+            {{- end }}
+            {{- end }}
+
+            {{- if $env }}
+            {{- $env | indent 12 }}
             {{- end }}
 
           ports:
@@ -103,5 +146,10 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 20
 
-          resources: {{ .Values.web.resources }}
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
+
+        {{- if $containers }}
+        {{- $containers | nindent 8 }}
+        {{- end }}
 {{- end }}

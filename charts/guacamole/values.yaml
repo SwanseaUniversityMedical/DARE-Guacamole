@@ -1,4 +1,64 @@
 
+guacamole:
+
+  ## default nodeSelector for guacamole Pods (is overridden by pod-specific values)
+  ## - docs for nodeSelector:
+  ##   https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  ##
+  defaultNodeSelector: {}
+
+  ## default affinity configs for guacamole Pods (is overridden by pod-specific values)
+  ## - spec for Affinity:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#affinity-v1-core
+  ##
+  defaultAffinity: {}
+
+  ## default toleration configs for guacamole Pods (is overridden by pod-specific values)
+  ## - spec for Toleration:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#toleration-v1-core
+  ##
+  defaultTolerations: []
+
+  ## default securityContext configs for guacamole Pods (is overridden by pod-specific values)
+  ## - spec for PodSecurityContext:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#podsecuritycontext-v1-core
+  ##
+  defaultSecurityContext:
+    ## sets the filesystem owner group of files/folders in mounted volumes
+    ## this does NOT give root permissions to Pods, only the "root" group
+    fsGroup: 0
+
+  ## extra environment variables for the guacamole Pods
+  ## - spec for EnvVar:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvar-v1-core
+  ##
+  extraEnv: []
+
+  ## extra environment variables for the guacamole Pods
+  ## - spec for EnvVarFrom:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvarfrom-v1-core
+  ##
+  extraEnvFrom: []
+
+  ## extra containers for the guacamole Pods
+  ## - spec for Container:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#container-v1-core
+  ##
+  extraContainers: []
+
+  ## extra VolumeMounts for the guacamole Pods
+  ## - spec for VolumeMount:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volumemount-v1-core
+  ##
+  extraVolumeMounts: []
+
+  ## extra Volumes for the guacamole Pods
+  ## - spec for Volume:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volume-v1-core
+  ##
+  extraVolumes: []
+
+
 guacd:
   enabled: true
 
@@ -7,16 +67,93 @@ guacd:
     tag: 1.5.3
     pullPolicy: IfNotPresent
     pullSecret: ""
-
-  resources:
-    requests:
-      memory: "64Mi"
-      cpu: "250m"
-    limits:
-      memory: "256Mi"
-      cpu: "750m"
+    uid: 1001
+    gid: 0
 
   port: 4822
+
+  service:
+    annotations: {}
+
+  ## the number of guacd Pods to run
+  ##
+  replicas: 1
+
+  ## resource requests/limits for the guacd Pod
+  ## - spec for ResourceRequirements:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+  ##
+  resources: {}
+
+  ## the nodeSelector configs for the guacd Pods
+  ## - docs for nodeSelector:
+  ##   https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  ##
+  nodeSelector: {}
+
+  ## the affinity configs for the guacd Pods
+  ## - spec for Affinity:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#affinity-v1-core
+  ##
+  affinity: {}
+
+  ## the toleration configs for the guacd Pods
+  ## - spec for Toleration:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#toleration-v1-core
+  ##
+  tolerations: []
+
+  ## the security context for the guacd Pods
+  ## - spec for PodSecurityContext:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#podsecuritycontext-v1-core
+  ##
+  securityContext: {}
+
+  ## labels for the guacd Deployment
+  ##
+  labels: {}
+
+  ## Pod labels for the guacd Deployment
+  ##
+  podLabels: {}
+
+  ## annotations for the guacd Deployment
+  ##
+  annotations: {}
+
+  ## Pod annotations for the guacd Deployment
+  ##
+  podAnnotations: {}
+
+  ## extra environment variables for the guacd Deployment
+  ## - spec for EnvVar:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvar-v1-core
+  ##
+  extraEnv: []
+
+  ## extra environment variables for the guacd Deployment
+  ## - spec for EnvVarFrom:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvarfrom-v1-core
+  ##
+  extraEnvFrom: []
+
+  ## extra containers for the guacd Deployment
+  ## - spec for Container:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#container-v1-core
+  ##
+  extraContainers: []
+
+  ## extra VolumeMounts for the guacd Deployment
+  ## - spec for VolumeMount:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volumemount-v1-core
+  ##
+  extraVolumeMounts: []
+
+  ## extra Volumes for the guacd Deployment
+  ## - spec for Volume:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volume-v1-core
+  ##
+  extraVolumes: []
 
 web:
   enabled: true
@@ -26,31 +163,108 @@ web:
     tag: 1.0.3
     pullPolicy: IfNotPresent
     pullSecret: ""
-
-  resources:
-    requests:
-      memory: "64Mi"
-      cpu: "250m"
-    limits:
-      memory: "256Mi"
-      cpu: "750m"
+    uid: 1001
+    gid: 0
 
   port: 8080
+
+  service:
+    annotations: {}
+
+  ## the number of web Pods to run
+  ##
+  replicas: 1
+
+  ## resource requests/limits for the web Pod
+  ## - spec for ResourceRequirements:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+  ##
+  resources: {}
+
+  ## the nodeSelector configs for the web Pods
+  ## - docs for nodeSelector:
+  ##   https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  ##
+  nodeSelector: {}
+
+  ## the affinity configs for the web Pods
+  ## - spec for Affinity:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#affinity-v1-core
+  ##
+  affinity: {}
+
+  ## the toleration configs for the web Pods
+  ## - spec for Toleration:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#toleration-v1-core
+  ##
+  tolerations: []
+
+  ## the security context for the web Pods
+  ## - spec for PodSecurityContext:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#podsecuritycontext-v1-core
+  ##
+  securityContext: {}
+
+  ## labels for the web Deployment
+  ##
+  labels: {}
+
+  ## Pod labels for the web Deployment
+  ##
+  podLabels: {}
+
+  ## annotations for the web Deployment
+  ##
+  annotations: {}
+
+  ## Pod annotations for the web Deployment
+  ##
+  podAnnotations: {}
+
+  ## extra environment variables for the web Deployment
+  ## - spec for EnvVar:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvar-v1-core
+  ##
+  extraEnv: []
+
+  ## extra environment variables for the web Deployment
+  ## - spec for EnvVarFrom:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvarfrom-v1-core
+  ##
+  extraEnvFrom: []
+
+  ## extra containers for the web Deployment
+  ## - spec for Container:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#container-v1-core
+  ##
+  extraContainers: []
+
+  ## extra VolumeMounts for the web Deployment
+  ## - spec for VolumeMount:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volumemount-v1-core
+  ##
+  extraVolumeMounts: []
+
+  ## extra Volumes for the web Deployment
+  ## - spec for Volume:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volume-v1-core
+  ##
+  extraVolumes: []
 
 ingress:
   # Only enabled when web.enable is also true
   enabled: false
 
-#  apiVersion: networking.k8s.io/v1
-#  web:
-#    annotations:
-#      cert-manager.io/cluster-issuer: "ca-issuer"
-#    host: guacamole.dare.serp.dk.serp.ac.uk
-#    path: ""
-#    ingressClassName: "nginx-hiru"
-#    tls:
-#      enabled: true
-#      secretName: serp-dare-guacamole-dev-guacamole-tls
+  annotations: {}
+
+  host:
+  path:
+
+  ingressClassName:
+
+  tls:
+    enabled: false
+    secretName:
 
 database:
   enabled: true
