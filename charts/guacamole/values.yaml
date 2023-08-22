@@ -282,7 +282,7 @@ database:
         postgresql: 5432
 
     initdb:
-      scriptsConfigMap: {{ include "guacamole.fullname" . }}-database-init
+      scriptsConfigMap: serp-dare-guacamole-dev-database-init
 
     persistence:
       enabled: false
