@@ -113,7 +113,7 @@ spec:
 
             {{- if .Values.database.enabled }}
             - name: POSTGRES_HOSTNAME
-              value: {{ include "guacamole.fullname" . }}-db.svc.cluster.local
+              value: {{ include "guacamole.fullname" . }}-database.svc.cluster.local
             - name: POSTGRES_PORT
               value: "{{ .Values.database.primary.service.ports.postgresql }}"
             - name: POSTGRES_DATABASE
