@@ -49,7 +49,7 @@ Define the PodSecurityContext for guacamole pods
 EXAMPLE USAGE: {{ include "guacamole.podSecurityContext" (dict "Release" .Release "Values" .Values "securityContext" $securityContext) }}
 */}}
 {{- define "guacamole.podSecurityContext" }}
-{{- .securityContext | default .Values.airflow.defaultSecurityContext | toYaml }}
+{{- .securityContext | default .Values.guacamole.defaultSecurityContext | toYaml }}
 {{- end }}
 
 {{/*
