@@ -282,7 +282,8 @@ database:
         postgresql: 5432
 
     initdb:
-      scriptsConfigMap: serp-dare-guacamole-dev-database-init
+      # Config map name must be set by the deployment since helm won't let us use templates to generate it within values file...
+      scriptsConfigMap:
 
     persistence:
       enabled: false
