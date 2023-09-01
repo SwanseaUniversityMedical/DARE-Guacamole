@@ -10,8 +10,7 @@ RUN apt-get update && \
     rm -rf /tmp
 
 COPY controller /opt/controller
-RUN chmod +x /opt/controller/entrypoint.sh && \
-    pip3 install --no-cache-dir -e /opt/controller && \
+RUN pip3 install --no-cache-dir -e /opt/controller && \
     rm -rf /tmp
 
 ENTRYPOINT ["python3", "/opt/controller/src/controller.py"]
