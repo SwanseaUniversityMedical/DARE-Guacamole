@@ -13,11 +13,6 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     test_suite='tests',
-    entry_points={
-        "console_scripts": [
-            "connection-controller = src.controller.__main__:main",
-        ]
-    },
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'License :: OSI Approved :: MIT License',

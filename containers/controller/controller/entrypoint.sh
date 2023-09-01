@@ -1,1 +1,1 @@
-python -m controller "$@"
+python -m connection-controller "$@"
