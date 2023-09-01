@@ -14,4 +14,4 @@ RUN chmod +x /opt/controller/entrypoint.sh && \
     pip3 install --no-cache-dir -e /opt/controller && \
     rm -rf /tmp
 
-ENTRYPOINT /opt/controller/entrypoint.sh
+ENTRYPOINT ["python3", "/opt/controller/src/controller.py"]
