@@ -1,1 +1,1 @@
-python -m connection-controller "$@"
+python3 -m connection-controller "$@"
