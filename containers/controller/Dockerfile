@@ -13,5 +13,4 @@ COPY controller /opt/controller
 RUN pip3 install --no-cache-dir -e /opt/controller && \
     rm -rf /tmp
 
-USER 1001
 ENTRYPOINT /opt/controller/entrypoint.sh
