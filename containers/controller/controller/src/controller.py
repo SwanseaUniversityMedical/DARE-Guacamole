@@ -1,6 +1,12 @@
 import click
 import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(module)s %(funcName)s %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -10,6 +16,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print("print main")
-    logger.info("logger main")
     main()
