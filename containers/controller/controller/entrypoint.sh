@@ -1,1 +1,1 @@
-python3 -m connection-controller "$@"
+python3 /opt/controller/src/controller/__main__.py "$@"
