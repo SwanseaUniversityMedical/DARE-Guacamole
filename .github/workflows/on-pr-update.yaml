@@ -57,7 +57,7 @@ jobs:
       build-command: |
         docker build -t $IMAGE -f containers/controller/Dockerfile containers/controller
       test-command: |
-        echo '0'
+        docker run $IMAGE --help
     secrets:
       container-registry-token: ${{ secrets.HARBOR_TOKEN }}
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
