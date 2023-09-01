@@ -31,12 +31,13 @@ jobs:
         guacamole-container:
           - './.github/workflows/on-pr-update.yaml'
           - 'containers/guacamole/**'
-        guacamole-chart:
+        chart:
           - './.github/workflows/on-pr-update.yaml'
           - 'charts/guacamole/**'
     secrets:
       slack-token: ${{ secrets.SLACK_TOKEN }}
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
 
   controller-container:
     # Build the container and push it as :pr-42 and :pr-42-fe45b3h
@@ -88,12 +89,12 @@ jobs:
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
       slack-token: ${{ secrets.SLACK_TOKEN }}
 
-  guacamole-chart:
+  chart:
     # Build the chart and push it as :pr-42 and :pr-42-fe45b3h
     needs:
       - slack
       - changes
-    if: fromJSON(needs.changes.outputs.changes).guacamole-chart == 'true'
+    if: fromJSON(needs.changes.outputs.changes).chart == 'true'
     uses: SwanseaUniversityMedical/workflows/.github/workflows/on-pr-update-chart.yaml@v1.0.0
     with:
       job-name: guacamole-chart
@@ -120,7 +121,7 @@ jobs:
       - changes
       - controller-container
       - guacamole-container
-      - guacamole-chart
+      - chart
     uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-pr-thread.yaml@v1.0.0
     if: always()
     with:
