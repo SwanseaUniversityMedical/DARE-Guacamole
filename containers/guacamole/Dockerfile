@@ -6,3 +6,6 @@ FROM guacamole/guacamole:1.5.3
 LABEL org.opencontainers.image.source=https://github.com/SwanseaUniversityMedical/DARE-Guacamole
 
 # TODO setup a build step for compiling and injecting custom jar extnesions
+
+# Intentionally trigger a build error
+RUN ///
