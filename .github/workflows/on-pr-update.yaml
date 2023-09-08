@@ -31,9 +31,12 @@ jobs:
         guacamole-container:
           - './.github/workflows/on-pr-update.yaml'
           - 'containers/guacamole/**'
-        chart:
+        guacamole-chart:
           - './.github/workflows/on-pr-update.yaml'
           - 'charts/guacamole/**'
+        vm-ubuntu-chart:
+          - './.github/workflows/on-pr-update.yaml'
+          - 'charts/vm-ubuntu/**'
     secrets:
       slack-token: ${{ secrets.SLACK_TOKEN }}
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
@@ -87,12 +90,12 @@ jobs:
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
       slack-token: ${{ secrets.SLACK_TOKEN }}
 
-  chart:
+  guacamole-chart:
     # Build the chart and push it as :pr-42 and :pr-42-fe45b3h
     needs:
       - slack
       - changes
-    if: fromJSON(needs.changes.outputs.changes).chart == 'true'
+    if: fromJSON(needs.changes.outputs.changes).guacamole-chart == 'true'
     uses: SwanseaUniversityMedical/workflows/.github/workflows/on-pr-update-chart.yaml@v2.3.0
     with:
       job-name: guacamole-chart
@@ -111,6 +114,30 @@ jobs:
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
       slack-token: ${{ secrets.SLACK_TOKEN }}
 
+  vm-ubuntu-chart:
+    # Build the chart and push it as :pr-42 and :pr-42-fe45b3h
+    needs:
+      - slack
+      - changes
+    if: fromJSON(needs.changes.outputs.changes).vm-ubuntu-chart == 'true'
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-pr-update-chart.yaml@v2.3.0
+    with:
+      job-name: vm-ubuntu-chart
+      chart: charts/vm-ubuntu
+      chart-registry: ${{ vars.HARBOR_REGISTRY }}
+      chart-registry-user: ${{ vars.HARBOR_USER }}
+      chart-registry-project: ${{ vars.HARBOR_PROJECT }}
+      chart-registry-repo: vm-ubuntu
+      github-app-id: ${{ vars.APP_ID }}
+      slack-channel: ${{ vars.SLACK_CHANNEL }}
+      slack-thread: ${{ needs.slack.outputs.thread }}
+      test-command: |
+        helm template $CHART --values charts/vm-ubuntu-chart/values.yaml
+    secrets:
+      chart-registry-token: ${{ secrets.HARBOR_TOKEN }}
+      github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      slack-token: ${{ secrets.SLACK_TOKEN }}
+
   slack-update:
     # Update the original Slack message with the final workflow status
     # WARNING! ALL UPSTREAM JOBS MUST BE DECLARED HERE TO REPORT FAILURES CORRECTLY!
@@ -119,7 +146,8 @@ jobs:
       - changes
       - controller-container
       - guacamole-container
-      - chart
+      - guacamole-chart
+      - vm-ubuntu-chart
     uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-pr-thread.yaml@v2.3.0
     if: always()
     with:
