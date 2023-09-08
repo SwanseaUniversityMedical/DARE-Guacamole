@@ -132,7 +132,7 @@ jobs:
       slack-channel: ${{ vars.SLACK_CHANNEL }}
       slack-thread: ${{ needs.slack.outputs.thread }}
       test-command: |
-        helm template $CHART --values charts/vm-ubuntu-chart/values.yaml
+        helm template $CHART --values charts/vm-ubuntu/values.yaml
     secrets:
       chart-registry-token: ${{ secrets.HARBOR_TOKEN }}
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
