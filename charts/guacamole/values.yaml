@@ -58,6 +58,96 @@ guacamole:
   ##
   extraVolumes: []
 
+controller:
+  enabled: true
+
+  image:
+    repository: harbor.ukserp.ac.uk/dare/guacamole-controller
+    tag: 1.5.3
+    pullPolicy: IfNotPresent
+    pullSecret: ""
+    uid: 1001
+    gid: 0
+
+  ## the number of controller Pods to run
+  ##
+  replicas: 1
+
+  ## resource requests/limits for the controller Pod
+  ## - spec for ResourceRequirements:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+  ##
+  resources: {}
+
+  ## the nodeSelector configs for the controller Pods
+  ## - docs for nodeSelector:
+  ##   https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+  ##
+  nodeSelector: {}
+
+  ## the affinity configs for the controller Pods
+  ## - spec for Affinity:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#affinity-v1-core
+  ##
+  affinity: {}
+
+  ## the toleration configs for the controller Pods
+  ## - spec for Toleration:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#toleration-v1-core
+  ##
+  tolerations: []
+
+  ## the security context for the controller Pods
+  ## - spec for PodSecurityContext:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#podsecuritycontext-v1-core
+  ##
+  securityContext: {}
+
+  ## labels for the controller Deployment
+  ##
+  labels: {}
+
+  ## Pod labels for the controller Deployment
+  ##
+  podLabels: {}
+
+  ## annotations for the controller Deployment
+  ##
+  annotations: {}
+
+  ## Pod annotations for the controller Deployment
+  ##
+  podAnnotations: {}
+
+  ## extra environment variables for the controller Deployment
+  ## - spec for EnvVar:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvar-v1-core
+  ##
+  extraEnv: []
+
+  ## extra environment variables for the controller Deployment
+  ## - spec for EnvVarFrom:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#envvarfrom-v1-core
+  ##
+  extraEnvFrom: []
+
+  ## extra containers for the controller Deployment
+  ## - spec for Container:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#container-v1-core
+  ##
+  extraContainers: []
+
+  ## extra VolumeMounts for the controller Deployment
+  ## - spec for VolumeMount:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volumemount-v1-core
+  ##
+  extraVolumeMounts: []
+
+  ## extra Volumes for the controller Deployment
+  ## - spec for Volume:
+  ##   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#volume-v1-core
+  ##
+  extraVolumes: []
 
 guacd:
   enabled: true
@@ -170,6 +260,16 @@ web:
 
   service:
     annotations: {}
+
+  admins:
+    - user: guacadmin
+      # Generated from python by:
+      #>>> from hashlib import sha256
+      #>>> password_salt = bytes.fromhex(SALT)
+      #>>> password_hash = sha256(PASSWORD.encode() + password_salt.hex().encode())
+      #>>> password_hash.hexdigest().upper()
+      password: "CA458A7D494E3BE824F5E1E175A1556C0F8EEF2C2D7DF3633BEC4A29C4411960"
+      salt: "FE24ADC5E11E2B25288D1704ABE67A79E342ECC26064CE69C5B3177795A82264"
 
   ## the number of web Pods to run
   ##
