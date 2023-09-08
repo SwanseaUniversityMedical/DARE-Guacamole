@@ -25,19 +25,47 @@ jobs:
       slack-thread: ${{ needs.slack.outputs.thread }}
       github-app-id: ${{ vars.APP_ID }}
       filters: |
+        controller-container:
+          - './.github/workflows/on-pr-update.yaml'
+          - 'containers/controller/**'
         guacamole-container:
           - './.github/workflows/on-pr-update.yaml'
-          - 'containers/**'
+          - 'containers/guacamole/**'
         chart:
-        - './.github/workflows/on-pr-update.yaml'
-        - 'charts/**'
-
+          - './.github/workflows/on-pr-update.yaml'
+          - 'charts/guacamole/**'
     secrets:
       slack-token: ${{ secrets.SLACK_TOKEN }}
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
+
+  controller-container:
+    # Build the container and push it as :pr-42 and :pr-42-fe45b3h
+    needs:
+      - slack
+      - changes
+    if: fromJSON(needs.changes.outputs.changes).controller-container == 'true'
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-pr-update-container.yaml@v1.0.0
+    with:
+      job-name: controller-container
+      container-registry: ${{ vars.HARBOR_REGISTRY }}
+      container-registry-user: ${{ vars.HARBOR_USER }}
+      container-registry-project: ${{ vars.HARBOR_PROJECT }}
+      container-registry-repo: guacamole-controller
+      github-app-id: ${{ vars.APP_ID }}
+      slack-channel: ${{ vars.SLACK_CHANNEL }}
+      slack-thread: ${{ needs.slack.outputs.thread }}
+      build-command: |
+        docker build -t $IMAGE -f containers/controller/Dockerfile containers/controller
+      test-command: |
+        docker run $IMAGE --help
+    secrets:
+      container-registry-token: ${{ secrets.HARBOR_TOKEN }}
+      github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      slack-token: ${{ secrets.SLACK_TOKEN }}
+
   guacamole-container:
-    # Build the DARE Guacamole container and push it as :pr-42 and :pr-42-fe45b3h
+    # Build the container and push it as :pr-42 and :pr-42-fe45b3h
     needs:
       - slack
       - changes
@@ -48,17 +76,16 @@ jobs:
       container-registry: ${{ vars.HARBOR_REGISTRY }}
       container-registry-user: ${{ vars.HARBOR_USER }}
       container-registry-project: ${{ vars.HARBOR_PROJECT }}
-      container-registry-repo: ${{ vars.HARBOR_REPO }}
+      container-registry-repo: guacamole
       github-app-id: ${{ vars.APP_ID }}
       slack-channel: ${{ vars.SLACK_CHANNEL }}
       slack-thread: ${{ needs.slack.outputs.thread }}
       build-command: |
-        docker build -t $IMAGE -f containers/guacamole/Dockerfile .
+        docker build -t $IMAGE -f containers/guacamole/Dockerfile containers/guacamole
     secrets:
       container-registry-token: ${{ secrets.HARBOR_TOKEN }}
       github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
       slack-token: ${{ secrets.SLACK_TOKEN }}
-
 
   chart:
     # Build the chart and push it as :pr-42 and :pr-42-fe45b3h
@@ -68,12 +95,12 @@ jobs:
     if: fromJSON(needs.changes.outputs.changes).chart == 'true'
     uses: SwanseaUniversityMedical/workflows/.github/workflows/on-pr-update-chart.yaml@v2.3.0
     with:
-      job-name: chart
-      chart: charts/**
+      job-name: guacamole-chart
+      chart: charts/guacamole
       chart-registry: ${{ vars.HARBOR_REGISTRY }}
       chart-registry-user: ${{ vars.HARBOR_USER }}
       chart-registry-project: ${{ vars.HARBOR_PROJECT }}
-      chart-registry-repo: ${{ vars.HARBOR_REPO }}
+      chart-registry-repo: guacamole
       github-app-id: ${{ vars.APP_ID }}
       slack-channel: ${{ vars.SLACK_CHANNEL }}
       slack-thread: ${{ needs.slack.outputs.thread }}
@@ -90,6 +117,7 @@ jobs:
     needs:
       - slack
       - changes
+      - controller-container
       - guacamole-container
       - chart
     uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-pr-thread.yaml@v2.3.0

@@ -1,4 +1,16 @@
 {{/*
+Define the image configs for containers
+EXAMPLE USAGE: {{ include "image" (dict "image" .Values.guacamole.image) }}
+*/}}
+{{- define "image" }}
+image: {{ .image.repository }}:{{ .image.tag }}
+imagePullPolicy: {{ .image.pullPolicy }}
+securityContext:
+    runAsUser: {{ .image.uid }}
+    runAsGroup: {{ .image.gid }}
+{{- end }}
+
+{{/*
 Construct the base name for all resources in this chart.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
