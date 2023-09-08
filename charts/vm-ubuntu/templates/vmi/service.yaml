@@ -1,0 +1,33 @@
+{{- if .Values.web.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "vm.fullname" . }}-vmi
+
+  {{- if .Values.vmi.service.annotations }}
+  annotations:
+    {{- toYaml .Values.vmi.service.annotations | nindent 4 }}
+  {{- end }}
+
+  labels:
+    app: {{ include "vm.labels.app" . }}
+    component: web
+    chart: {{ include "vm.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+
+spec:
+  selector:
+    app: {{ include "vm.labels.app" . }}
+    component: vmi
+    release: {{ .Release.Name }}
+
+  ports:
+  - name: ssh
+    port: 22
+    protocol: TCP
+  - name: rdp
+    port: 3389
+    protocol: TCP
+
+{{- end }}

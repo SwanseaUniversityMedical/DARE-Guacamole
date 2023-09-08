@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 1.0.0
-description: Helm chart for deploying Kubevirt Ubuntu VM.
+description: Helm chart for deploying KubeVirt Ubuntu VM.
 name: vm-ubuntu
 type: application
 version: 1.0.0
