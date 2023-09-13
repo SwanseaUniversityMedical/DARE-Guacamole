@@ -50,31 +50,20 @@ spec:
               disk:
                 bus: virtio
 
-          interfaces:
-            - name: default
-              masquerade: {}
-
         resources:
           requests:
             memory: 2048M
 
-      networks:
-        - name: default
-          pod: {}
-
       volumes:
         - name: containervolume
           containerDisk:
-            image: quay.io/containerdisks/fedora:latest
+            image: quay.io/containerdisks/ubuntu:22.04
 
         - name: cloudinitvolume
           cloudInitNoCloud:
             userData: |-
               #cloud-config
-              users:
-              - name: test
-                lock_passwd: false
-                passwd: test
-                ssh_pwauth: true
-  
+              user: ubuntu
+              password: ubuntu
+              chpasswd: { expire: False }
 {{- end }}
