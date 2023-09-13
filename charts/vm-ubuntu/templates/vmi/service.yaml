@@ -11,7 +11,7 @@ metadata:
 
   labels:
     app: {{ include "vm.labels.app" . }}
-    component: web
+    component: vmi
     chart: {{ include "vm.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

@@ -1,0 +1,79 @@
+{{- if .Values.vm.enabled }}
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: {{ include "vm.fullname" . }}-vm
+
+  {{- if .Values.vm.annotations }}
+  annotations:
+    {{- toYaml .Values.vm.annotations | nindent 4 }}
+
+    guacamole/access: {{ .Values.vm.ldap.accessFilter }}
+  {{- end }}
+
+  labels:
+    app: {{ include "vm.labels.app" . }}
+    component: vm
+    chart: {{ include "vm.labels.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- if .Values.vm.labels }}
+    {{- toYaml .Values.vm.labels | nindent 4 }}
+    {{- end }}
+
+spec:
+  
+  running: {{ .Values.vm.running }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ include "vm.labels.app" . }}
+        component: vmi
+        chart: {{ include "vm.labels.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+
+      spec:
+        domain:
+          cpu:
+            cores: 1
+
+          devices:
+            disks:
+              - name: containervolume
+                disk:
+                  bus: virtio
+
+              - name: cloudinitvolume
+                disk:
+                  bus: virtio
+
+            interfaces:
+              - name: default
+                masquerade: {}
+
+          resources:
+            requests:
+              memory: 2048M
+
+        networks:
+          - name: default
+            pod: {}
+
+        volumes:
+          - name: containervolume
+            containerDisk:
+              image: tedezed/ubuntu-container-disk:20.0
+
+          - name: cloudinitvolume
+            cloudInitNoCloud:
+              userData: |-
+                #cloud-config
+                chpasswd:
+                  list: |
+                    ubuntu:ubuntu
+                    root:toor
+                  expire: False
+  
+{{- end }}
