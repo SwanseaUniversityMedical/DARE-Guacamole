@@ -1,17 +1,17 @@
-{{- if .Values.web.enabled }}
+{{- if .Values.vm.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "vm.fullname" . }}-vmi
+  name: {{ include "vm.fullname" . }}-vm
 
-  {{- if .Values.vmi.service.annotations }}
+  {{- if .Values.vm.service.annotations }}
   annotations:
-    {{- toYaml .Values.vmi.service.annotations | nindent 4 }}
+    {{- toYaml .Values.vm.service.annotations | nindent 4 }}
   {{- end }}
 
   labels:
     app: {{ include "vm.labels.app" . }}
-    component: vmi
+    component: vm
     chart: {{ include "vm.labels.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

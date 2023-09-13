@@ -10,5 +10,8 @@ vm:
   extraVolumeMounts: []
   extraVolumes: []
 
+  service:
+    annotations: {}
+
   ldap:
     accessFilter: "(objectClass=person)"
