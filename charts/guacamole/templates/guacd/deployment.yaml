@@ -113,7 +113,7 @@ spec:
               containerPort: {{ .Values.guacd.port }}
 
           resources:
-            {{- toYaml .Values.web.resources | nindent 12 }}
+            {{- toYaml .Values.guacd.resources | nindent 12 }}
 
         {{- if $containers }}
         {{- $containers | nindent 8 }}
