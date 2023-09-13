@@ -1,4 +1,10 @@
 
-sssd:
-  ldap_access_filter: memberOf=CN=VM-Ubuntu-01,OU=Connections,OU=Guacamole,OU=DARE,OU=Dev,OU=Kuberneties,OU=Service Accounts,DC=chi,DC=swan,DC=ac,DC=uk
 
+vmi:
+  enabled: true
+
+  ldap:
+    accessFilter: >-
+      (&(objectClass=person)
+        (memberOf=CN=VM-Ubuntu-01,OU=Connections,OU=Guacamole,OU=DARE,OU=Dev,
+                  OU=Kuberneties,OU=Service Accounts,DC=chi,DC=swan,DC=ac,DC=uk))
