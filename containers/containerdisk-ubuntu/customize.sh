@@ -1,3 +1,7 @@
+apt-get update
+apt-get install -y --no-install-recommends \
+  cloud-init cloud-utils
+
 set -x
 set -e
 
