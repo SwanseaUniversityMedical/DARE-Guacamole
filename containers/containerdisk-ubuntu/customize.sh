@@ -1,6 +1,8 @@
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
-  cloud-init cloud-utils
+  qemu-kvm qemu-utils qemu-guest-agent \
+  libvirt-daemon-system libvirt-clients virt-manager virtinst \
+  bridge-utils cloud-init cloud-utils cpu-checker
 
 set -x
 set -e
