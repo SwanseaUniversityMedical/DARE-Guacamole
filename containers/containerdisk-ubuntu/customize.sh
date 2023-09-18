@@ -30,7 +30,7 @@ virt-install \
   --graphics none \
   --network default \
   --import \
-  --virt-type kvm \
+  --arch "x86_64" \
   --debug \
   --serial file,path=/tmp/provision-vm-console.log
 
