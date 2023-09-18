@@ -82,6 +82,7 @@ jobs:
         uses: docker/setup-qemu-action@v3
 
       - name: build os image
+        working-directory: containers/containerdisk-ubuntu
         run: ./customize.sh
 
   guacamole-container:
