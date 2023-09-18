@@ -8,9 +8,7 @@ RUN apt-get update && \
     apt-get autoremove -y --purge && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp && \
-    useradd -g libvirt $USER && \
-    useradd -g kvm $USER
+    rm -rf /tmp
 
 COPY customize.sh /tmp/customize.sh
 COPY cloud-config /tmp/cloud-config
