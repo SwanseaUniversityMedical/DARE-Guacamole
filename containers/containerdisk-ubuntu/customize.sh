@@ -3,13 +3,13 @@ set -e
 
 readonly SOURCE_IMAGE_URL="https://cloud-images.ubuntu.com/focal/20230915/focal-server-cloudimg-amd64-disk-kvm.img"
 readonly SOURCE_IMAGE_PATH="/tmp/source-disk.img"
-readonly CUSTOMIZE_IMAGE_PATH="/tmp/disk.img"
+readonly CUSTOMIZE_IMAGE_PATH="img.qcow2"
 
 curl ${SOURCE_IMAGE_URL} -o ${SOURCE_IMAGE_PATH}
 
 readonly DOMAIN_NAME="provision-vm"
 readonly CLOUD_INIT_ISO="/tmp/cloudinit.iso"
-readonly CLOUD_CONFIG_PATH="/tmp/cloud-config"
+readonly CLOUD_CONFIG_PATH="cloud-config"
 
 cloud-localds "${CLOUD_INIT_ISO}" "${CLOUD_CONFIG_PATH}"
 
