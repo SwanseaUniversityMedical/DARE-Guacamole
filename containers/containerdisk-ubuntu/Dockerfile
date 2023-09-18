@@ -1,11 +1,16 @@
 FROM ubuntu:22.04 as build
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends linux-virt qemu-utils qemu-guest-agent cloud-init curl && \
+    apt-get install -y --no-install-recommends \
+      qemu-kvm qemu-utils qemu-guest-agent \
+      libvirt-daemon-system libvirt-clients \
+      bridge-utils cloud-init curl && \
     apt-get autoremove -y --purge && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp
+    rm -rf /tmp && \
+    adduser $USER libvirt && \
+    adduser $USER kvm
 
 COPY customize.sh /tmp/customize.sh
 COPY cloud-config /tmp/cloud-config

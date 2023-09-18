@@ -1,6 +1,8 @@
 set -x
 set -e
 
+kvm-ok
+
 readonly SOURCE_IMAGE_URL="https://cloud-images.ubuntu.com/focal/20230915/focal-server-cloudimg-amd64-disk-kvm.img"
 readonly SOURCE_IMAGE_PATH="/tmp/source-disk.img"
 readonly CUSTOMIZE_IMAGE_PATH="/tmp/disk.img"
