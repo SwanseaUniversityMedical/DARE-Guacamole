@@ -1,8 +1,8 @@
 FROM balenalib/qemux86-64-ubuntu-node:16-focal-build as build
 
-
-
-#RUN virt-sysprep -a /img.qcow --operations machine-id,bash-history,logfiles,tmp-files,net-hostname,net-hwaddr
+COPY customize.sh /tmp/customize.sh
+COPY cloud-config /tmp/cloud-config
+RUN /tmp/customize.sh
 
 
 FROM kubevirt/container-disk-v1alpha:v0.13.7

@@ -1,0 +1,11 @@
+#cloud-config
+password: ubuntu
+chpasswd: { expire: False }
+ssh_pwauth: yes
+runcmd:
+  - sudo apt-get update
+  - sudo apt-get upgrade -y
+  - sudo hostnamectl set-hostname ""
+  - sudo hostnamectl set-hostname "" --transient
+  - sudo systemctl start qemu-guest-agent
+  - sudo shutdown
