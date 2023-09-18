@@ -73,6 +73,7 @@ jobs:
       - slack
       - changes
     if: fromJSON(needs.changes.outputs.changes).ubuntu-container == 'true'
+    runs-on: [self-hosted, linux, x64]
     steps:
       - name: clone repo
         uses: actions/checkout@v3
