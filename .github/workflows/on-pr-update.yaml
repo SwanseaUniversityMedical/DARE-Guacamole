@@ -83,7 +83,9 @@ jobs:
 
       - name: build os image
         working-directory: containers/containerdisk-ubuntu
-        run: ./customize.sh
+        run: |
+          chmod +x ./customize.sh
+          ./customize.sh
 
   guacamole-container:
     # Build the container and push it as :pr-42 and :pr-42-fe45b3h
