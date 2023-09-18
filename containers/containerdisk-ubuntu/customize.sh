@@ -1,5 +1,5 @@
-apt-get update
-apt-get install -y --no-install-recommends \
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends \
   cloud-init cloud-utils
 
 set -x
