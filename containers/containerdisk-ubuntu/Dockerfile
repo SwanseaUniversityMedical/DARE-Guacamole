@@ -3,7 +3,7 @@ FROM ubuntu:22.04 as build
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       qemu-kvm qemu-utils qemu-guest-agent \
-      libvirt-daemon-system libvirt-clients \
+      libvirt-daemon-system libvirt-clients virt-manager virtinst \
       bridge-utils cloud-init cpu-checker curl && \
     apt-get autoremove -y --purge && \
     apt-get clean -y && \
