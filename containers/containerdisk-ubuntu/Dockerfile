@@ -2,7 +2,8 @@ FROM balenalib/qemux86-64-ubuntu-node:16-focal-build as build
 
 COPY customize.sh /tmp/customize.sh
 COPY cloud-config /tmp/cloud-config
-RUN /tmp/customize.sh
+RUN chmod +x /tmp/customize.sh && \
+    /tmp/customize.sh
 
 FROM kubevirt/container-disk-v1alpha:v0.13.7
 
