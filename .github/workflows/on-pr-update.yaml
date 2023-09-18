@@ -74,6 +74,12 @@ jobs:
       - changes
     if: fromJSON(needs.changes.outputs.changes).ubuntu-container == 'true'
     steps:
+      - name: clone repo
+        uses: actions/checkout@v3
+
+      - name: install qemu
+        uses: docker/setup-qemu-action@v3
+
       - name: build os image
         run: ./customize.sh
 
