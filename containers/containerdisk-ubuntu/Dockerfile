@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       qemu-kvm qemu-utils qemu-guest-agent \
       libvirt-daemon-system libvirt-clients virt-manager virtinst \
-      bridge-utils cloud-init cpu-checker curl && \
+      bridge-utils cloud-init cloud-utils cpu-checker curl && \
     apt-get autoremove -y --purge && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
