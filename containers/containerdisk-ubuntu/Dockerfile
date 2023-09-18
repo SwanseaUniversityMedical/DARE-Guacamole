@@ -9,8 +9,8 @@ RUN apt-get update && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp && \
-    adduser $USER libvirt && \
-    adduser $USER kvm
+    useradd -g libvirt $USER && \
+    useradd -g kvm $USER
 
 COPY customize.sh /tmp/customize.sh
 COPY cloud-config /tmp/cloud-config
