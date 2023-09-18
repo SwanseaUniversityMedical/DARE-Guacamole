@@ -7,6 +7,12 @@ sudo apt-get install -y --no-install-recommends \
 set -x
 set -e
 
+lsmod | grep kvm
+
+modprobe kvm_intel
+
+lsmod | grep kvm
+
 readonly SOURCE_IMAGE_URL="https://cloud-images.ubuntu.com/focal/20230915/focal-server-cloudimg-amd64-disk-kvm.img"
 readonly SOURCE_IMAGE_PATH="/tmp/source-disk.img"
 readonly CUSTOMIZE_IMAGE_PATH="img.qcow2"
@@ -20,12 +26,13 @@ readonly CLOUD_CONFIG_PATH="cloud-config"
 cloud-localds "${CLOUD_INIT_ISO}" "${CLOUD_CONFIG_PATH}"
 
 virt-install \
+  --connect qemu:///system \
   --memory 2048 \
   --vcpus 2 \
   --name ${DOMAIN_NAME} \
   --disk "${SOURCE_IMAGE_PATH}",device=disk \
   --disk "${CLOUD_INIT_ISO}",device=cdrom \
-  --os-variant "${OS_VARIANT}" \
+  --os-variant "ubuntu22.04" \
   --graphics none \
   --network default \
   --import \
