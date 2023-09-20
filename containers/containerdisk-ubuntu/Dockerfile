@@ -5,7 +5,7 @@ FROM balenalib/qemux86-64-ubuntu-node:16-focal-build as build
 #RUN virt-sysprep -a /img.qcow --operations machine-id,bash-history,logfiles,tmp-files,net-hostname,net-hwaddr
 
 
-FROM kubevirt/container-disk-v1alpha:v0.13.7
+FROM kubevirt/container-disk-v1alpha:v0.19.0
 
 LABEL org.opencontainers.image.source=https://github.com/SwanseaUniversityMedical/DARE-Guacamole
 
