@@ -45,7 +45,7 @@ jobs:
       - slack
       - changes
     if: fromJSON(needs.changes.outputs.changes).controller-container == 'true'
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-pr-update-container.yaml@v1.0.0
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-pr-update-container.yaml@v1.2.0
     with:
       job-name: controller-container
       container-registry: ${{ vars.HARBOR_REGISTRY }}
