@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+permissions:
+  # read needed for changes detection
+  # write needed to author a Github release
+  contents: write
+  
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
@@ -17,7 +22,7 @@ jobs:
 
   slack:
     # Open a new PR thread on Slack for this CI run
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-release-thread.yaml@v2.8.2
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-release-thread.yaml@v3.0.0
     with:
       slack-channel: ${{ vars.SLACK_CHANNEL }}
     secrets:
@@ -26,11 +31,10 @@ jobs:
   changes:
     # Detect which files have been changed on this PR's full history
     needs: slack
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/changes.yaml@v2.8.2
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/changes.yaml@v3.0.0
     with:
       slack-channel: ${{ vars.SLACK_CHANNEL }}
       slack-thread: ${{ needs.slack.outputs.thread }}
-      github-app-id: ${{ vars.APP_ID }}
       filters: |
         controller-container:
           - './.github/workflows/on-release.yaml'
@@ -44,7 +48,6 @@ jobs:
 
     secrets:
       slack-token: ${{ secrets.SLACK_TOKEN }}
-      github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
   ######################################################################################################################
   # Container Tasks
@@ -56,11 +59,10 @@ jobs:
       - slack
       - changes
     if: fromJSON(needs.changes.outputs.changes).controller-container == 'true'
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-container.yaml@v2.8.2
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-container.yaml@v3.0.0
     with:
       job-name: controller-container
       container-registry: ${{ vars.HARBOR_REGISTRY }}
-      github-app-id: ${{ vars.APP_ID }}
       container-registry-user: ${{ vars.HARBOR_USER }}
       container-registry-project: ${{ vars.HARBOR_PROJECT }}
       container-registry-repo: guacamole-controller
@@ -74,7 +76,6 @@ jobs:
     secrets:
       container-registry-token: ${{ secrets.HARBOR_TOKEN }}
       slack-token: ${{ secrets.SLACK_TOKEN }}
-      github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
   guacamole-container:
     # Build the DARE Guacamole container and push it as :rc-1.0.0
@@ -82,11 +83,10 @@ jobs:
       - slack
       - changes
     if: fromJSON(needs.changes.outputs.changes).guacamole-container == 'true'
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-container.yaml@v2.8.2
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-container.yaml@v3.0.0
     with:
       job-name: guacamole-container
       container-registry: ${{ vars.HARBOR_REGISTRY }}
-      github-app-id: ${{ vars.APP_ID }}
       container-registry-user: ${{ vars.HARBOR_USER }}
       container-registry-project: ${{ vars.HARBOR_PROJECT }}
       container-registry-repo: guacamole
@@ -98,7 +98,6 @@ jobs:
     secrets:
       container-registry-token: ${{ secrets.HARBOR_TOKEN }}
       slack-token: ${{ secrets.SLACK_TOKEN }}
-      github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
   ######################################################################################################################
   # Chart Tasks
@@ -110,7 +109,7 @@ jobs:
       - slack
       - changes
     if: fromJSON(needs.changes.outputs.changes).chart == 'true'
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-chart.yaml@v2.8.2
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-chart.yaml@v3.0.0
     with:
       job-name: chart
       chart-registry: ${{ vars.HARBOR_REGISTRY }}
@@ -118,7 +117,6 @@ jobs:
       chart-registry-project: ${{ vars.HARBOR_PROJECT }}
       chart-registry-repo: guacamole
       release-tag-format: 'DARE-Guacamole-Helm-${version}'
-      github-app-id: ${{ vars.APP_ID }}
       slack-channel: ${{ vars.SLACK_CHANNEL }}
       slack-thread: ${{ needs.slack.outputs.thread }}
       chart: charts/**
@@ -126,7 +124,6 @@ jobs:
         helm template $CHART --values charts/guacamole/values.yaml
     secrets:
       chart-registry-token: ${{ secrets.HARBOR_TOKEN }}
-      github-app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
       slack-token: ${{ secrets.SLACK_TOKEN }}
 
   ######################################################################################################################
@@ -142,7 +139,7 @@ jobs:
       - controller-container
       - guacamole-container
       - chart
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-release-thread.yaml@v2.8.2
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-release-thread.yaml@v3.0.0
     if: always()
     with:
       slack-channel: ${{ vars.SLACK_CHANNEL }}
