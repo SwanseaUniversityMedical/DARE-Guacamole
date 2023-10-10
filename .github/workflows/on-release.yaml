@@ -16,25 +16,11 @@ concurrency:
 
 jobs:
 
-  ######################################################################################################################
-  # Pre-Tasks 
-  ######################################################################################################################
-
-  slack:
-    # Open a new PR thread on Slack for this CI run
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-release-thread.yaml@v4.1.0
-    with:
-      slack-channel: ${{ vars.SLACK_CHANNEL }}
-    secrets:
-      slack-token: ${{ secrets.SLACK_TOKEN }}
-
   changes:
     # Detect which files have been changed on this PR's full history
-    needs: slack
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/changes.yaml@v4.1.0
+    uses: SwanseaUniversityMedical/workflows/.github/workflows/changes-release.yaml@v4.1.0
     with:
       slack-channel: ${{ vars.SLACK_CHANNEL }}
-      slack-thread: ${{ needs.slack.outputs.thread }}
       filters: |
         controller-container:
           - './.github/workflows/on-release.yaml'
@@ -55,9 +41,7 @@ jobs:
 
   controller-container:
     # Build the DARE Guacamole container and push it as :rc-1.0.0
-    needs:
-      - slack
-      - changes
+    needs: changes
     if: fromJSON(needs.changes.outputs.changes).controller-container == 'true'
     uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-container.yaml@v4.1.0
     with:
@@ -68,7 +52,6 @@ jobs:
       container-registry-repo: guacamole-controller
       release-tag-format: 'DARE-Guacamole-Controller-Container-${version}'
       slack-channel: ${{ vars.SLACK_CHANNEL }}
-      slack-thread: ${{ needs.slack.outputs.thread }}
       build-command: |
         docker build -t $IMAGE -f containers/controller/Dockerfile containers/controller
       test-command: |
@@ -79,9 +62,7 @@ jobs:
 
   guacamole-container:
     # Build the DARE Guacamole container and push it as :rc-1.0.0
-    needs:
-      - slack
-      - changes
+    needs: changes
     if: fromJSON(needs.changes.outputs.changes).guacamole-container == 'true'
     uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-container.yaml@v4.1.0
     with:
@@ -92,7 +73,6 @@ jobs:
       container-registry-repo: guacamole
       release-tag-format: 'DARE-Guacamole-Container-${version}'
       slack-channel: ${{ vars.SLACK_CHANNEL }}
-      slack-thread: ${{ needs.slack.outputs.thread }}
       build-command: |
         docker build -t $IMAGE -f containers/guacamole/Dockerfile containers/guacamole
     secrets:
@@ -105,9 +85,7 @@ jobs:
 
   chart:
     # Build the chart and push it as x.y.z-rc
-    needs:
-      - slack
-      - changes
+    needs: changes
     if: fromJSON(needs.changes.outputs.changes).chart == 'true'
     uses: SwanseaUniversityMedical/workflows/.github/workflows/on-release-chart.yaml@v4.1.0
     with:
@@ -118,33 +96,10 @@ jobs:
       chart-registry-repo: guacamole
       release-tag-format: 'DARE-Guacamole-Helm-${version}'
       slack-channel: ${{ vars.SLACK_CHANNEL }}
-      slack-thread: ${{ needs.slack.outputs.thread }}
       chart: charts/**
       test-command: |
         helm template $CHART --values charts/guacamole/values.yaml
     secrets:
       chart-registry-token: ${{ secrets.HARBOR_TOKEN }}
-      slack-token: ${{ secrets.SLACK_TOKEN }}
-
-  ######################################################################################################################
-  # Post-Tasks
-  ######################################################################################################################
-
-  slack-update:
-    # Update the original Slack message with the final workflow status
-    # WARNING! ALL UPSTREAM JOBS MUST BE DECLARED HERE TO REPORT FAILURES CORRECTLY!
-    needs:
-      - slack
-      - changes
-      - controller-container
-      - guacamole-container
-      - chart
-    uses: SwanseaUniversityMedical/workflows/.github/workflows/slack-release-thread.yaml@v4.1.0
-    if: always()
-    with:
-      slack-channel: ${{ vars.SLACK_CHANNEL }}
-      slack-thread: ${{ needs.slack.outputs.thread }}
-      status: ${{ contains(join(needs.*.result, ','), 'failure') && ':no_entry:' || ':white_check_mark:' }}
-    secrets:
       slack-token: ${{ secrets.SLACK_TOKEN }}
       
