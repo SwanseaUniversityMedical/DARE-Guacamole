@@ -91,7 +91,7 @@ web:
 
   image:
     repository: harbor.ukserp.ac.uk/dare/guacamole
-    tag: 1.4.4
+    tag: 1.4.5
     pullPolicy: IfNotPresent
     pullSecret: ""
     uid: 1001
