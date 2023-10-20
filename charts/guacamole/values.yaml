@@ -21,7 +21,7 @@ controller:
 
   image:
     repository: harbor.ukserp.ac.uk/dare/guacamole-controller
-    tag: 1.2.6
+    tag: 1.2.7
     pullPolicy: IfNotPresent
     pullSecret: ""
     uid: 1001
