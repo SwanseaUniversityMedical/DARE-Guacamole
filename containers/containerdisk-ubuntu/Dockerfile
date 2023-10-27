@@ -1,4 +1,4 @@
-FROM balenalib/qemux86-64-ubuntu-node:16-focal-build as build
+FROM balenalib/qemux86-64-ubuntu-node:19-focal-build as build
 
 
 
