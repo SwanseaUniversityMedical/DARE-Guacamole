@@ -41,7 +41,6 @@ jobs:
       job-name: controller-container
       registry: ${{ vars.HARBOR_REGISTRY }}
       registry-user: ${{ vars.HARBOR_USER }}
-      container-registry-project: ${{ vars.HARBOR_PROJECT }}
       registry-repo: dare/guacamole-controller
       release-tag-format: 'DARE-Guacamole-Controller-Container-${version}'
       cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
